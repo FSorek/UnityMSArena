@@ -109,8 +109,8 @@ MonoBehaviour:
   InputMvtUnits: []
   InputActionTimer: 0
   CanSendInput: 1
-  LockstepCycle: 0.3
-  LockstepCycleRange: {x: 0.3, y: 0.4}
+  LockstepCycle: 0.1
+  LockstepCycleRange: {x: 0.1, y: 0.3}
   DestroyObjDelay: 1
   ReceivedActions: 0
   CanPerformActions: 0

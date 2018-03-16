@@ -42,6 +42,7 @@ namespace RTSEngine
 		public bool AttackWhenAttacked = false; //is the unit allowed to defend itself when attacked? 
 		public bool AttackInRange = false; //when an enemy unit enter in range of this unit, can the unit attack it automatically?
 		public float AttackRange = 10.0f;
+        public float SearchEnemyRange = 50f;
 
 		//AI related settings;
 		[HideInInspector]
@@ -353,7 +354,7 @@ namespace RTSEngine
 
                         if (GameManager.MultiplayerGame == false || (GameManager.MultiplayerGame == true && GameManager.PlayerFactionID == AttackerFactionID()))
                         { //if this is an offline game or online but this is the local player
-                            if (AttackInRange == true) //if the attacker can attack in range and it's also in idle state
+                            if (AttackInRange == true) //if the attacker can attack in range ~and it's also in idle state~
                             {
                                 
                                 //if the faction is a NPC or a local player and having a target is required.
@@ -371,24 +372,10 @@ namespace RTSEngine
                                         //Search if there are enemy units in range:
                                         bool Found = false;
 
-                                        float Size = AttackRange;
+                                        float Size = SearchEnemyRange;
                                         Vector3 SearchFrom = transform.position;
 
-                                        //only for NPC factions:
-
-                                        //if there's no city center to protect:
-                                        if (AttackRangeCenter == null)
-                                        {
-                                            AttackRangeFromCenter = false; //we're not defending any city center then:
-                                        }
-                                        //if there's a city center to protect
-                                        if (AttackRangeFromCenter == true && AttackRangeCenter != null)
-                                        {
-                                            SearchFrom = AttackRangeCenter.transform.position; //the search pos is the city center
-                                            Size = AttackRangeCenter.GetComponent<Border>().Size; //and the search size is the whole city border size:
-                                        }
-
-                                        Collider[] ObjsInRange = Physics.OverlapSphere(SearchFrom, Size);
+                                        Collider[] ObjsInRange = Physics.OverlapSphere(SearchFrom, Size); // ADD LAYERMASK
                                         int i = 0; //counter
                                         while (i < ObjsInRange.Length && Found == false)
                                         {
@@ -410,7 +397,6 @@ namespace RTSEngine
                                                                 { //if the unit can attack the target.
                                                                   //Set this unit as the target 
                                                                     SetAttackTarget(ObjsInRange[i].gameObject);
-                                                                    UnitMgr.StopMvt();
                                                                     Found = true;
                                                                 }
                                                             }
@@ -431,8 +417,8 @@ namespace RTSEngine
                                             //if the attacker is a unit:
                                             if (Attacker == Attackers.Unit)
                                             {
-                                                //Follow the taraget:
-                                                UnitMgr.CheckUnitPath(Vector3.zero, AttackTarget, MaxUnitStoppingDistance + AttackTarget.GetComponent<Unit>().NavAgent.radius + UnitMgr.NavAgent.radius, 0, true);
+                                                //Follow the target:
+                                                UnitMgr.CheckUnitPath(Vector3.zero, AttackTarget, AttackRange + AttackTarget.GetComponent<Unit>().NavAgent.radius + UnitMgr.NavAgent.radius, 0, true);
                                             }
                                         }
 
@@ -501,6 +487,11 @@ namespace RTSEngine
                                         }
                                     }
 
+                                    if (!MoveOnAttack && Vector3.Distance(transform.position, AttackTarget.transform.position) <= AttackRange)
+                                    {
+                                        UnitMgr.DestinationReached = true;
+                                    }
+                                        
                                     //if the attacker is in the correct range of his target
                                     if (UnitMgr.DestinationReached == true)
                                     {
@@ -517,7 +508,6 @@ namespace RTSEngine
                                 }
 
                                 //reaching this stage means that the attacker is in range of the target and it's all good to go:
-
                                 WasInTargetRange = true;
                                 //Make the attack object look at the target:
                                 if (WeaponObj != null)

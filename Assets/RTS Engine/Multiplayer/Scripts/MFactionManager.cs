@@ -76,7 +76,8 @@ namespace RTSEngine
 		public bool ReceivedActions = false; //true when the player receives orders from the server
 		[HideInInspector]
 		public bool CanPerformActions = false; //true when the player is able to perform the pending actions
-		public float SnapDistance = 5f; //when an action is a unit movement, the snap distance represents the maximal distance between the unit's position in the server and its position in the client view.
+        public float SnapDistanceTime = 2f;
+        public float SnapDistance = 5f; //when an action is a unit movement, the snap distance represents the maximal distance between the unit's position in the server and its position in the client view.
 		//if this distance is surpassed, then the unit will be snapped to the correct distance before starting the movement.
 
 		List<NextCommandsVars> PendingCommands = new List<NextCommandsVars>();
@@ -296,7 +297,10 @@ namespace RTSEngine
 										if (CanSnapDistance == true) {
 											//see if we need to snap its position or not.
 											if (Vector3.Distance (CurrentUnit.transform.position, PendingActions [i].InitialPos) > SnapDistance) {
-												CurrentUnit.transform.position = PendingActions [i].InitialPos;
+                                                //CurrentUnit.transform.position = PendingActions [i].InitialPos;
+                                                float Timer = 0f;
+                                                Timer = (Timer <= SnapDistanceTime) ? Timer += Time.deltaTime : 0f;
+                                                CurrentUnit.transform.position = Vector3.Lerp(CurrentUnit.transform.position, PendingActions[i].InitialPos, Timer/SnapDistanceTime);
 											}
 										}
 

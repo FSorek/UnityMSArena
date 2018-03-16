@@ -706,7 +706,7 @@ MonoBehaviour:
   AttackCategoriesList: []
   AttackReload: 1.5
   MinUnitStoppingDistance: 12
-  MaxUnitStoppingDistance: 25
+  MaxUnitStoppingDistance: 35
   MinBuildingStoppingDistance: 8
   MaxBuildingStoppingDistance: 15
   LastBuildingDistance: 0
@@ -714,6 +714,7 @@ MonoBehaviour:
   AttackWhenAttacked: 1
   AttackInRange: 1
   AttackRange: 30
+  SearchEnemyRange: 50
   AttackRangeCenter: {fileID: 0}
   AttackRangeFromCenter: 0
   SearchReload: 1
@@ -723,7 +724,7 @@ MonoBehaviour:
   FollowRange: 50
   AttackEffect: {fileID: 0}
   AttackEffectTime: 0
-  ChangeMvtDistance: 2
+  ChangeMvtDistance: 5
   LastTargetPos: {x: 0, y: 0, z: 0}
   CustomDamage: []
   UnitDamage: 50
