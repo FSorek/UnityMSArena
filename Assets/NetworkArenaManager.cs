@@ -10,10 +10,11 @@ namespace RTSArena
     {
         public MFactionManager[] Factions;
         bool foundNullFaction = false;
-        // Use this for initialization
         public static float SpawnTimer = 10f;
         [SyncVar] private bool serverNAM = false;
-        [SyncVar] public float spawnCountdown = SpawnTimer;
+        [SyncVar] private float spawnCountdown = SpawnTimer;
+
+
         bool CanSpawn = false;
         NetworkArenaManager serverInstance;
         void Awake()

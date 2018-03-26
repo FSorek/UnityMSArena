@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 114234339052873066}
   - component: {fileID: 114804245450291484}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: WarriorSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +99,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1645764094720986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.7301025, y: 0.5, z: -60.328785}
+  m_LocalPosition: {x: -4.459207, y: -1.3840168e-17, z: -139.49323}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4421093775625418}
@@ -184,7 +184,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: ce6fc667c5affac49bcaefe68654d1d8, type: 2}
+  - {fileID: 2100000, guid: f739c8821348b574daaf853c8678cf99, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -256,22 +256,22 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 88
-    i1: 67
-    i2: 80
-    i3: 104
-    i4: 162
-    i5: 36
-    i6: 196
-    i7: 36
-    i8: 201
-    i9: 191
-    i10: 160
-    i11: 136
-    i12: 156
-    i13: 141
-    i14: 158
-    i15: 131
+    i0: 15
+    i1: 62
+    i2: 123
+    i3: 79
+    i4: 236
+    i5: 150
+    i6: 177
+    i7: 84
+    i8: 232
+    i9: 60
+    i10: 14
+    i11: 193
+    i12: 151
+    i13: 254
+    i14: 239
+    i15: 196
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
 --- !u!114 &114804245450291484
@@ -285,8 +285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 355ffff6f90114b45b44e0f98605f531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Code: Spawner
-  UnitPrefab: {fileID: 114568745444632590, guid: 6396800bd790e994dafcc3324741994a,
+  Code: WarriorSpawner
+  UnitPrefab: {fileID: 114688229435639410, guid: e86667574da529a46bc7b91533d78a9a,
     type: 2}
   SpawnPosition: {fileID: 4802042447562120}
   MovePosition: {fileID: 0}

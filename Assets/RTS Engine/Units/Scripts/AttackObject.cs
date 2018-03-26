@@ -8,7 +8,9 @@ using System.Collections.Generic;
 namespace RTSEngine
 {
 	public class AttackObject : MonoBehaviour {
-
+        public bool FollowTarget;
+        [HideInInspector]
+        public Transform Target;
 		[HideInInspector]
 		public GameObject Source; //From the attack object was launched.
 		[HideInInspector]
@@ -19,8 +21,7 @@ namespace RTSEngine
 		//Attack damage:
 		[HideInInspector]
 		public Attack.DamageVars[] CustomDamage; //if the target unit/building code is in the list then it will be given the matching damage, if not then the default damage
-		[HideInInspector]
-		public float DefaultUnitDamage = 10.0f; //damage points when this unit attacks another unit.
+        public Attack.Damage DefaultUnitDamage;
 		[HideInInspector]
 		public float DefaultBuildingDamage = 10.0f; //damage points when this unit attacks a building.
 
@@ -83,9 +84,13 @@ namespace RTSEngine
 		// Update is called once per frame
 		void Update () 
 		{
+            Vector3 moveDir = MvtVector.normalized;
 			//move the attack object towards its target:
-			Vector3 moveDir = MvtVector.normalized;
-			transform.position += moveDir * Speed * Time.deltaTime;
+            if (Target != null && FollowTarget)
+			    moveDir = (Target.position - transform.position).normalized;
+            else
+                moveDir = MvtVector.normalized;
+            transform.position += moveDir * Speed * Time.deltaTime;
 
 			//if we already done damage and this object gets destroyed after damage:
 			if (DestroyOnDamage == true && DidDamage == true) {
@@ -149,13 +154,13 @@ namespace RTSEngine
                                 {
                                     //DoT settings:
                                     HitUnit.DoT = DoT;
-                                    HitUnit.DoT.Damage = AttackManager.GetDamage(HitUnit.gameObject, CustomDamage, DefaultUnitDamage);
+                                    HitUnit.DoT.Damage = AttackManager.GetDamage(HitUnit.gameObject, DefaultUnitDamage);
 
                                 }
                                 else
                                 {
                                     //Remove health points from the unit:
-                                    HitUnit.AddHealth(-AttackManager.GetDamage(HitUnit.gameObject, CustomDamage, DefaultUnitDamage), Source);
+                                    HitUnit.AddHealth(-AttackManager.GetDamage(HitUnit.gameObject, DefaultUnitDamage), Source);
                                     //Attack effect: units only currently
                                     AttackManager.Instance.SpawnEffectObj(AttackEffect, other.gameObject, AttackEffectTime, false);
                                 }
@@ -179,7 +184,7 @@ namespace RTSEngine
                                 else
                                 {
                                     //Remove health points from the unit:
-                                    HitBuilding.AddHealth(-AttackManager.GetDamage(HitBuilding.gameObject, CustomDamage, DefaultBuildingDamage), Source);
+                                    HitBuilding.AddHealth(-AttackManager.GetDamage(HitBuilding.gameObject, DefaultUnitDamage), Source);
                                 }
 
                                 //Spawning the damage effect object:

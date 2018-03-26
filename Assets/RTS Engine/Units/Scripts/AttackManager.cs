@@ -82,23 +82,43 @@ namespace RTSEngine
         }
 
         //a function that determines how much damage will the attacker give to a unit/building
-        public static float GetDamage(GameObject Victim, Attack.DamageVars[] DamageList, float DefaultDamage)
+        public static float GetDamage(GameObject Victim, Attack.Damage damage)
         {
-            if (DamageList.Length > 0)
-            { //if there's custom damage
-                if (Victim.gameObject.GetComponent<Unit>())
-                { //if the victim is a unit
-                  //search for the right damage
-                    return GetDamageBasedOnCode(Victim.gameObject.GetComponent<Unit>().Code, DamageList, DefaultDamage);
-                }
-                if (Victim.gameObject.GetComponent<Building>())
-                { //if the victim is a building
-                  //search for the right damage
-                    return GetDamageBasedOnCode(Victim.gameObject.GetComponent<Building>().Code, DamageList, DefaultDamage);
-                }
+            float finalDamage = damage.UnitDamage;
+            Unit unitVictim = Victim.GetComponent<Unit>();
+
+            switch (unitVictim.UnitArmorWeight)
+            {
+                case Unit.ArmorWeight.Light:
+                    finalDamage += damage.BonusToLight;
+                    break;
+                case Unit.ArmorWeight.Medium:
+                    finalDamage += damage.BonusToMedium;
+                    break;
+                case Unit.ArmorWeight.Heavy:
+                    finalDamage += damage.BonusToHeavy;
+                    break;
             }
 
-            return DefaultDamage;
+            switch (unitVictim.UnitArmorType) // mutated = 1
+            {
+                case Unit.ArmorType.Biological:
+                    finalDamage *= GetBioDamageModifier(damage.DamageType);
+                    break;
+                case Unit.ArmorType.Mechanical:
+                    finalDamage *= GetMechaDamageModifier(damage.DamageType);
+                    break;
+                case Unit.ArmorType.Magical:
+                    finalDamage *= GetMagicDamageModifier(damage.DamageType);
+                    break;
+                case Unit.ArmorType.Metal:
+                    finalDamage *= GetMetalDamageModifier(damage.DamageType);
+                    break;
+            }
+            finalDamage -= unitVictim.UnitArmorPoints;
+            if (finalDamage <= 0) finalDamage = 1;
+
+            return finalDamage;
         }
 
         //based a code (from a unit/building) get the damage:
@@ -238,5 +258,74 @@ namespace RTSEngine
                 Effect.GetComponent<EffectObj>().Timer = LifeTime;
             }
         }
+        public static float GetBioDamageModifier(Attack.DamageType damageType)
+        {
+            float dmgMod = 1;
+            switch (damageType) // Chaos and Piercing = 1;
+            {
+                case Attack.DamageType.Slash:
+                    dmgMod = 2;
+                    break;
+                case Attack.DamageType.Impact:
+                    dmgMod = .5f;
+                    break;
+                case Attack.DamageType.Magic:
+                    dmgMod = 1.5f;
+                    break;
+            }
+            return dmgMod;
+        }
+        public static float GetMechaDamageModifier(Attack.DamageType damageType)
+        {
+            float dmgMod = 1;
+            switch (damageType) // Chaos and Magic = 1
+            {
+                case Attack.DamageType.Piercing:
+                    dmgMod = 2;
+                    break;
+                case Attack.DamageType.Slash:
+                    dmgMod = 0.5f;
+                    break;
+                case Attack.DamageType.Impact:
+                    dmgMod = 1.5f;
+                    break;
+            }
+            return dmgMod;
+        }
+        public static float GetMagicDamageModifier(Attack.DamageType damageType)
+        {
+            float dmgMod = 1;
+            switch (damageType) // Chaos and Impact = 1
+            {
+                case Attack.DamageType.Piercing:
+                    dmgMod = 0.5f;
+                    break;
+                case Attack.DamageType.Slash:
+                    dmgMod = 1.5f;
+                    break;
+                case Attack.DamageType.Magic:
+                    dmgMod = 2;
+                    break;
+            }
+            return dmgMod;
+        }
+        public static float GetMetalDamageModifier(Attack.DamageType damageType)
+        {
+            float dmgMod = 1;
+            switch (damageType) // Chaos and Slahs = 1
+            {
+                case Attack.DamageType.Piercing:
+                    dmgMod = 1.5f;
+                    break;
+                case Attack.DamageType.Impact:
+                    dmgMod = 2f;
+                    break;
+                case Attack.DamageType.Magic:
+                    dmgMod = 0.5f;
+                    break;
+            }
+            return dmgMod;
+        }
+
     }
 }

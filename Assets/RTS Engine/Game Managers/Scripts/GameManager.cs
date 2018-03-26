@@ -12,6 +12,10 @@ namespace RTSEngine
 	public class GameManager : MonoBehaviour {
         public Transform Team1Zone;
         public Transform Team2Zone;
+        public int Team1XZone;
+        public int Team2XZone;
+        public int ZoneDamage;
+        public float ZoneDmgTimer;
 
         public static List<Spawner> ReadySpawners = new List<Spawner>(); 
 
@@ -61,6 +65,7 @@ namespace RTSEngine
 			//For multiplayer games purpose:
 			public MFactionLobbyInfo MFactionLobby; //This is the component that holds the basic information of the network player's faction (faction name, color)
 			public MFactionManager MFactionMgr; //This component is the one that handles communication between the local player and the server.
+            public NetworkArenaManager arenaMgr;
 		}
 		public List<FactionInfo> Factions = new List<FactionInfo>();
 		public bool RandomizePlayerControl = true;
@@ -175,7 +180,7 @@ namespace RTSEngine
 						Factions [i].Lost = false;
 
 						Factions [i].MFactionLobby = ThisFaction; //linking the faction with its lobby info script.
-                        //Factions[i].MFactionMgr = GetTargetFactionConnection(ThisFaction.FactionID);
+                        Factions[i].MFactionMgr = GetTargetFactionConnection(ThisFaction.FactionID);
                         if(Factions[i].CapitalBuilding!=null)
 						    Factions [i].CapitalPos = Factions [i].CapitalBuilding.transform.position; //setting the capital pos to spawn the capital building object at later.
 
@@ -600,6 +605,26 @@ namespace RTSEngine
         {
             ReadySpawners.Add(spawner);
         }
+        public bool IsOnDamageZone(Transform unit, int team)
+        {
+            if (team == 0)
+            {
+                if (unit.position.z <= Team2XZone)
+                { return true; }
+            }
+            else if (team == 1)
+                if (unit.position.z >= Team1XZone)
+                    return true;
 
-	}
+            return false;
+        }
+
+        public void CountdownVictoryTimers()
+        {
+            foreach (var fmgr in Factions)
+            {
+                //
+            }
+        }
+    }
 }

@@ -12,8 +12,13 @@ using RTSArena;
 namespace RTSEngine
 {
 	public class MFactionManager : NetworkBehaviour {
+        [SyncVar] private int unitsInCotestZoneTeam1;
+        [SyncVar] private int unitsInCotestZoneTeam2;
+        [SyncVar] public float Team1ContestTimer = 15f;
+        [SyncVar] public float Team2ContestTimer = 15f;
+        [SyncVar] private bool serverMgrInstance = false;
 
-		[HideInInspector]
+        [HideInInspector]
 		[SyncVar]
 		public int FactionID = 0; //The faction ID that this script manages.
 
@@ -152,9 +157,41 @@ namespace RTSEngine
 
 		bool IsClientReady = false; //is the client's connection ready or not?
 
-		void Update ()
+        IEnumerator SmoothSnapPosition(Unit CurrentUnit, int i)
+        {
+            float elapsedTime = 0;
+            Vector3 startingPos = CurrentUnit.transform.position;
+            while (elapsedTime < SnapDistanceTime)
+            {
+                CurrentUnit.transform.position = Vector3.Lerp(startingPos, PendingActions[i].InitialPos, (elapsedTime / SnapDistanceTime));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            CurrentUnit.transform.position = PendingActions[i].InitialPos;
+        }
+
+        void Update ()
 		{
 			if (isServer == true) { //if this is the server.
+
+                if (Team1ContestTimer <= 0)
+                {
+                    CmdFactionDefeated(0);
+                }
+                if (Team2ContestTimer <= 0)
+                {
+                    CmdFactionDefeated(1);
+                }
+
+                if(unitsInCotestZoneTeam1 > 0)
+                {
+                    Team1ContestTimer -= Time.deltaTime;
+                }
+                if(unitsInCotestZoneTeam2 > 0)
+                {
+                    Team2ContestTimer -= Time.deltaTime;
+                }
+
 				//Destroy timer:
 				if (DestroyObjTimer > 0) {
 					DestroyObjTimer -= Time.deltaTime;
@@ -297,11 +334,12 @@ namespace RTSEngine
 										if (CanSnapDistance == true) {
 											//see if we need to snap its position or not.
 											if (Vector3.Distance (CurrentUnit.transform.position, PendingActions [i].InitialPos) > SnapDistance) {
-                                                //CurrentUnit.transform.position = PendingActions [i].InitialPos;
-                                                float Timer = 0f;
-                                                Timer = (Timer <= SnapDistanceTime) ? Timer += Time.deltaTime : 0f;
-                                                CurrentUnit.transform.position = Vector3.Lerp(CurrentUnit.transform.position, PendingActions[i].InitialPos, Timer/SnapDistanceTime);
-											}
+                                                CurrentUnit.transform.position = PendingActions [i].InitialPos;
+                                                //StartCoroutine(SmoothSnapPosition(CurrentUnit, i));
+                                                //float Timer = 0f;
+                                                //Timer = (Timer <= SnapDistanceTime) ? Timer += Time.deltaTime : 0f;
+                                                //CurrentUnit.transform.position = Vector3.Lerp(CurrentUnit.transform.position, PendingActions[i].InitialPos, Timer/SnapDistanceTime);
+                                            }
 										}
 
 										if (PendingActions [i].Target == null) {
@@ -695,6 +733,9 @@ namespace RTSEngine
 			//get the lobby manager:
 			NetworkMgr = FindObjectOfType (typeof(NetworkMapManager)) as NetworkMapManager;
 			NetworkMgr.CanvasObj.SetActive (false); //hide the multiplayer menu UI as this object is spawned when the map is loaded.
+            if (isServer)
+                serverMgrInstance = this;
+
 		}
 
 		void Start ()
@@ -707,8 +748,9 @@ namespace RTSEngine
 					//Debug.LogError ("Make sure that you set the 'Capital Building' Game Object in the 'MFactionManager' script because it will be spawned as soon as the MP game starts");
 				}
 			}
-
-			GameMgr.Factions [FactionID].MFactionMgr = this;
+            if (isServer)
+                serverMgrInstance = this;
+            GameMgr.Factions [FactionID].MFactionMgr = this;
 
 		}
 
@@ -778,6 +820,48 @@ namespace RTSEngine
 		}
 
         //----------RTS ARENA
+        public void ArenaTryToSpawnStationaryUnit(string UnitCode, Vector3 Pos, int factionID)
+        {
+            if (isLocalPlayer)
+            {
+                CmdArenaSpawnStationaryUnit(UnitCode, Pos, factionID); //ask the server to spawn this new unit
+            }
+        }
+        //spawn a unit from the server
+        [Command]
+        public void CmdArenaSpawnStationaryUnit(string UnitCode, Vector3 Pos, int factionID)
+        {
+            int i = 0;
+            GameObject UnitPrefab = null;
+            //search for the unit's prefab:
+            while (UnitPrefab == null && i < NetworkMgr.spawnPrefabs.Count)
+            {
+                if (NetworkMgr.spawnPrefabs[i].GetComponent<Unit>())
+                {
+                    if (NetworkMgr.spawnPrefabs[i].GetComponent<Unit>().Code == UnitCode)
+                    {
+                        UnitPrefab = NetworkMgr.spawnPrefabs[i];
+                    }
+                }
+                i++;
+            }
+
+            if (UnitPrefab != null)
+            { //if the requested unit is valid:
+              //create it in the server
+                GameObject UnitClone = Instantiate(UnitPrefab);
+                UnitClone.SetActive(false);
+
+                //set its position, faction and the building that created it:
+                UnitClone.transform.position = Pos;
+                UnitClone.GetComponent<Unit>().FactionID = factionID;
+                UnitClone.name = UnitClone.name + "(Spawned)";  
+                UnitClone.SetActive(true);
+
+                NetworkServer.SpawnWithClientAuthority(UnitClone, connectionToClient); //spawn the unit to all clients
+            }
+
+        }
         public void ArenaTryToSpawnUnit(string UnitCode, Vector3 Pos, NetworkInstanceId Creator, int factionID)
         {
             if (isLocalPlayer)
@@ -1105,7 +1189,8 @@ namespace RTSEngine
 		public void CmdAssignAuthority (NetworkInstanceId NetID)
 		{
 			GameObject Obj = NetworkServer.FindLocalObject (NetID);
-			Obj.gameObject.GetComponent<NetworkIdentity> ().RemoveClientAuthority (Obj.gameObject.GetComponent<NetworkIdentity> ().clientAuthorityOwner);
+            if(Obj.GetComponent<NetworkIdentity>().clientAuthorityOwner != null)
+			    Obj.gameObject.GetComponent<NetworkIdentity> ().RemoveClientAuthority (Obj.gameObject.GetComponent<NetworkIdentity> ().clientAuthorityOwner);
 			Obj.gameObject.GetComponent<NetworkIdentity> ().AssignClientAuthority (connectionToClient);
 		}
 
@@ -1117,7 +1202,47 @@ namespace RTSEngine
             }
         }
 
-		/*//Handling attack objects here:
+        [Command]
+        public void CmdAddUnitInZone(int team)
+        {
+            switch (team)
+            {
+                case 0:
+                    unitsInCotestZoneTeam2 += 1;
+                    break;
+                case 1:
+                    unitsInCotestZoneTeam1 += 1;
+                    break;
+            }
+        }
+
+        [Command]
+        public void CmdRemoveUnitInZone(int team)
+        {
+            switch (team)
+            {
+                case 0:
+                    unitsInCotestZoneTeam2 -= 1;
+                    break;
+                case 1:
+                    unitsInCotestZoneTeam1 -= 1;
+                    break;
+            }
+        }
+
+        public static MFactionManager GetServerManager()
+        {
+            MFactionManager[] managers = FindObjectsOfType<MFactionManager>();
+            MFactionManager foundMgr = null;
+            foreach (var mgr in managers)
+            {
+                if (mgr.serverMgrInstance)
+                    foundMgr = mgr;
+            }
+            return foundMgr;
+        }
+
+        /*//Handling attack objects here:
 	public void TryToSpawnAttackObj (string AttackObjCode, Vector3 Pos, bool DoDamage, int TargetFactionID, int SourceFactionID, float BuildingDamage, float UnitDamage, Vector3 MvtVector, float MvtSpeed, float DestroyTime, bool DestroyOnDamage, bool DamageOnce)
 	{
 		if (isLocalPlayer) {
@@ -1209,9 +1334,9 @@ namespace RTSEngine
 		AttackObj.GetComponent<AttackObject> ().RpcHideAttackObj ();
 	}*/
 
-		//Audio:
+        //Audio:
 
-		/*[Command]
+        /*[Command]
 	public void CmdSyncAudio (string Type, NetworkInstanceId SourceNetID, int AudioID, int ResourceID, bool Loop)
 	{
 		if (Type == "Builder" || Type == "Collector" || Type == "Attack") {
@@ -1261,5 +1386,5 @@ namespace RTSEngine
 			AudioManager.StopAudio (SourceObj);
 		}
 	}*/
-	}
+    }
 }

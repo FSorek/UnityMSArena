@@ -28,6 +28,14 @@ public class AttackEditor : Editor {
 		EditorGUILayout.Space ();
 
         Target.Attacker = (Attack.Attackers)EditorGUILayout.EnumPopup("Attacker", Target.Attacker);
+        Target.UnitDamage.DamageType = (Attack.DamageType)EditorGUILayout.EnumPopup("Damage Type", Target.UnitDamage.DamageType);
+        Target.UnitDamage.UnitDamage = EditorGUILayout.FloatField("Unit Damage", Target.UnitDamage.UnitDamage);
+        Target.UnitDamage.BonusToLight = EditorGUILayout.FloatField("Bonus to light", Target.UnitDamage.BonusToLight);
+        Target.UnitDamage.BonusToMedium = EditorGUILayout.FloatField("Bonus to medium", Target.UnitDamage.BonusToMedium);
+        Target.UnitDamage.BonusToHeavy = EditorGUILayout.FloatField("Bonus to heavy", Target.UnitDamage.BonusToHeavy);
+
+
+
 
         EditorGUILayout.LabelField ("Attack Icon:");
 		Target.AttackIcon = EditorGUILayout.ObjectField (Target.AttackIcon, typeof(Sprite), true) as Sprite;
@@ -72,7 +80,7 @@ public class AttackEditor : Editor {
 			serializedObject.ApplyModifiedProperties();
 		} else {
 			Target.BuildingDamage = EditorGUILayout.FloatField ("Building Damage:", Target.BuildingDamage);
-			Target.UnitDamage = EditorGUILayout.FloatField ("Unit Damage:", Target.UnitDamage);
+			
 		}
 
 		EditorGUILayout.Space ();

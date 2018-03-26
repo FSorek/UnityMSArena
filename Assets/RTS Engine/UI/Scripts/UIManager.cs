@@ -140,7 +140,7 @@ namespace RTSEngine
 			LoosingMenu.SetActive (false);
 
 			//update the population UI
-			UpdatePopulationUI ();
+			//UpdatePopulationUI ();
 
 			//Hide the health bar canvas in the beginning:
 			if (HealthBarCanvas != null) {

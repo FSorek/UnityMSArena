@@ -293,7 +293,7 @@ namespace RTSEngine
 					//Loop through all different types of army units:
 					for (int i = 0; i < ArmyUnits.Length; i++) {
 						//Determine how many units we need:
-						ArmyUnits [i].AmountNeeded = Mathf.RoundToInt(((ArmyUnits [i].AmountPerHundred*ArmyPower)/100)/ArmyUnits [i].Prefab.gameObject.GetComponent<Attack>().UnitDamage) + 1;
+						ArmyUnits [i].AmountNeeded = Mathf.RoundToInt(((ArmyUnits [i].AmountPerHundred*ArmyPower)/100)/ArmyUnits [i].Prefab.gameObject.GetComponent<Attack>().UnitDamage.UnitDamage) + 1;
 
 						if (ArmyUnits [i].CurrentUnits.Count < ArmyUnits [i].AmountNeeded) {
 							int j = 0;
@@ -463,7 +463,7 @@ namespace RTSEngine
 					if (ArmyUnits [i].CurrentUnits [j] != null) {
 						//Add it to the current army list:
 						Army.Add(ArmyUnits [i].CurrentUnits [j]);
-						AttackingArmyPower += ArmyUnits [i].CurrentUnits [j].AttackMgr.UnitDamage;
+						AttackingArmyPower += ArmyUnits [i].CurrentUnits [j].AttackMgr.UnitDamage.UnitDamage;
 						NeededAmount--;
 					}
 					j++;
@@ -689,7 +689,7 @@ namespace RTSEngine
                         if (AttackUnit.UnitMgr.FactionID == SourceFactionID)
                         {
                             //count the potential army power of the attacking faction:
-                            EnemyArmyPower += AttackUnit.UnitDamage;
+                            EnemyArmyPower += AttackUnit.UnitDamage.UnitDamage;
                         }
                     }
 				}
@@ -703,7 +703,7 @@ namespace RTSEngine
 
 			while (PowerNeeded > 0 && i < ArmyUnits.Length) {
 				//determine how many units we're sending to defend:
-				int MaxAmount = Mathf.RoundToInt(((ArmyUnits [i].AmountPerHundred*PowerNeeded)/100)/ArmyUnits [i].Prefab.gameObject.GetComponent<Attack>().UnitDamage);
+				int MaxAmount = Mathf.RoundToInt(((ArmyUnits [i].AmountPerHundred*PowerNeeded)/100)/ArmyUnits [i].Prefab.gameObject.GetComponent<Attack>().UnitDamage.UnitDamage);
 				if (MaxAmount > ArmyUnits [i].CurrentUnits.Count) {
 					MaxAmount = ArmyUnits [i].CurrentUnits.Count;
 				}
@@ -713,7 +713,7 @@ namespace RTSEngine
 						ArmyUnits [i].CurrentUnits [j].AttackMgr.AttackRangeFromCenter = true;
 						ArmyUnits [i].CurrentUnits [j].AttackMgr.AttackRangeCenter = Center;
 
-						PowerNeeded -=  ArmyUnits [i].CurrentUnits [j].AttackMgr.UnitDamage;
+						PowerNeeded -=  ArmyUnits [i].CurrentUnits [j].AttackMgr.UnitDamage.UnitDamage;
 					}
 					j++;
 				}

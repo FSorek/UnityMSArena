@@ -38,7 +38,13 @@ public class UnitEditor : Editor {
 		Target.Description = EditorGUILayout.TextField ("Unit Description: ", Target.Description);
 		EditorGUILayout.LabelField ("Unit Icon:");
 		Target.Icon = EditorGUILayout.ObjectField (Target.Icon, typeof(Sprite), true) as Sprite;
-		Target.CanBeMoved = EditorGUILayout.Toggle ("Can the unit be moved?", Target.CanBeMoved);
+
+        Target.UnitArmorType = (Unit.ArmorType)EditorGUILayout.EnumPopup("Armor Type", Target.UnitArmorType);
+        Target.UnitArmorWeight = (Unit.ArmorWeight)EditorGUILayout.EnumPopup("Armor Weight", Target.UnitArmorWeight);
+        Target.UnitArmorPoints = EditorGUILayout.IntField("Armor Points", Target.UnitArmorPoints);
+
+
+        Target.CanBeMoved = EditorGUILayout.Toggle ("Can the unit be moved?", Target.CanBeMoved);
 		Target.FreeUnit = EditorGUILayout.Toggle ("Free Unit? (Belongs to no faction)", Target.FreeUnit);
 		Target.FactionID = EditorGUILayout.IntField ("Faction ID: ", Target.FactionID);
 		Target.UnitHeight = EditorGUILayout.FloatField ("Unit Height: ", Target.UnitHeight);

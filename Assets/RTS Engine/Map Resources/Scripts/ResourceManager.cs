@@ -148,7 +148,7 @@ namespace RTSEngine
 					if (ResourcesInfo [i].UIImage)
 						ResourcesInfo [i].UIImage.sprite = ResourcesInfo [i].Icon;
 					if (ResourcesInfo [i].UIText && GameManager.PlayerFactionID >= 0) {
-						ResourcesInfo [i].UIText.text = FactionResourcesInfo [GameManager.PlayerFactionID].ResourcesTypes [i].Amount.ToString ();
+						//ResourcesInfo [i].UIText.text = FactionResourcesInfo [GameManager.PlayerFactionID].ResourcesTypes [i].Amount.ToString ();
 					}
 				}
 			}

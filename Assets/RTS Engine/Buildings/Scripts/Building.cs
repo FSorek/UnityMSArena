@@ -318,11 +318,11 @@ namespace RTSEngine
 			CamMov = GameMgr.CamMov;
 
 			//set the max building distance:
-			if (gameObject.GetComponent<BoxCollider> ().size.x > gameObject.GetComponent<BoxCollider> ().size.y) {
-				MaxBuildingDistance = gameObject.GetComponent<BoxCollider> ().size.x;
-			} else {
-				MaxBuildingDistance = gameObject.GetComponent<BoxCollider> ().size.y;
-			}
+			//if (gameObject.GetComponent<BoxCollider> ().size.x > gameObject.GetComponent<BoxCollider> ().size.y) {
+			//	MaxBuildingDistance = gameObject.GetComponent<BoxCollider> ().size.x;
+			//} else {
+			//	MaxBuildingDistance = gameObject.GetComponent<BoxCollider> ().size.y;
+			//}
 
 			HasWarningImage = false;
 		}
@@ -456,16 +456,12 @@ namespace RTSEngine
 
 			if(BuildingPlane == null) //if the building plane is not available.
 			{
-				Debug.LogError("You must attach a plane object at the bottom of the building and set it to 'BuildingPlane' in the inspector.");
+				//Debug.LogError("You must attach a plane object at the bottom of the building and set it to 'BuildingPlane' in the inspector.");
 			}
 
 			if(PlacedByDefault == false) //if the building is not placed by default.
 			{
 				BuildingPlane.GetComponent<Renderer>().material.color = Color.green; //start by setting the selection texture color to green which implies that it's allowed to place building at its position.
-			}
-			else
-			{
-				BuildingPlane.SetActive(false); //hide the building plane in case the building is placed by default.
 			}
 
 			//Building boundaries:
@@ -2037,7 +2033,7 @@ namespace RTSEngine
 
 								FactionMgr.Units [x].NavAgent.speed += BuildingTasksList [ID].AddSpeed;
 								if (FactionMgr.Units [x].gameObject.GetComponent<Attack> ()) {
-									FactionMgr.Units [x].gameObject.GetComponent<Attack> ().UnitDamage += BuildingTasksList [ID].AddUnitDamage;
+									FactionMgr.Units [x].gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage += BuildingTasksList [ID].AddUnitDamage;
 									FactionMgr.Units [x].gameObject.GetComponent<Attack> ().BuildingDamage += BuildingTasksList [ID].AddBuildingDamage;
 									FactionMgr.Units [x].gameObject.GetComponent<Attack> ().AttackRange += BuildingTasksList [ID].AddAttackRange;
 									FactionMgr.Units [x].gameObject.GetComponent<Attack> ().AttackReload += BuildingTasksList [ID].AddAttackReload;

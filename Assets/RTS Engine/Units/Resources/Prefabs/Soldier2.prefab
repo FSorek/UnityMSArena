@@ -1567,6 +1567,9 @@ MonoBehaviour:
   Name: Soldier 2
   Code: Soldier2
   Category: walkingunits
+  UnitArmorType: 0
+  UnitArmorWeight: 0
+  UnitArmorPoints: 0
   Description: High damage to units, meduim damage to buildings. Moves slowly.
   Icon: {fileID: 21300000, guid: 3d09db40d38272349af5e1e90ad7cc69, type: 3}
   FreeUnit: 0
@@ -1593,6 +1596,7 @@ MonoBehaviour:
   FlashTime: 0
   FactionID: 0
   CreatedBy: {fileID: 0}
+  SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 0}
   MvtTargetObj: {fileID: 0}
   DestinationReached: 0
@@ -1659,6 +1663,7 @@ MonoBehaviour:
   AttackWhenAttacked: 0
   AttackInRange: 1
   AttackRange: 10
+  SearchEnemyRange: 50
   AttackRangeCenter: {fileID: 0}
   AttackRangeFromCenter: 0
   SearchReload: 1
@@ -1670,8 +1675,13 @@ MonoBehaviour:
   AttackEffectTime: 0
   ChangeMvtDistance: 2
   LastTargetPos: {x: 0, y: 0, z: 0}
+  UnitDamage:
+    DamageType: 0
+    UnitDamage: 0
+    BonusToLight: 0
+    BonusToMedium: 0
+    BonusToHeavy: 0
   CustomDamage: []
-  UnitDamage: 8
   BuildingDamage: 10
   AreaDamage: 0
   AttackRanges:

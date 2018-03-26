@@ -93,7 +93,12 @@ namespace RTSEngine
 			if (DebugEnabled == true) {
 				Debug.Log ("Unit '"+Unit.Name+"' (Faction ID "+Unit.FactionID+") dead");
 			}
-			UnitDead (Unit);
+            if(Unit.IsInDamageZone)
+            {
+                GameManager.Instance.Factions[Unit.FactionID].MFactionMgr.CmdRemoveUnitInZone(Unit.FactionID);
+            }
+
+            UnitDead (Unit);
 		}
 		public void OnUnitSelected (Unit Unit) //called when a unit is selected
 		{

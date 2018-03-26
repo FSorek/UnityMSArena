@@ -913,9 +913,11 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: e86c377702aa20748ac223d70f899dc1, type: 2}
   - {fileID: 2100000, guid: ce52ee3f2bf219949a94cf7c2bceedf0, type: 2}
@@ -931,6 +933,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -948,9 +951,11 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: e86c377702aa20748ac223d70f899dc1, type: 2}
   - {fileID: 2100000, guid: 1aa329960fc39aa4490b3a9e7e965fa8, type: 2}
@@ -964,6 +969,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -981,9 +987,11 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7d96e88e1865f3d4f995ab72acec5bc6, type: 2}
   m_StaticBatchInfo:
@@ -996,6 +1004,7 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1108,54 +1117,69 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    - serializedVersion: 2
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
@@ -1176,6 +1200,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!95 &95994894174353388
 Animator:
   serializedVersion: 3
@@ -1193,6 +1218,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114680940249633730
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1207,6 +1233,9 @@ MonoBehaviour:
   Name: Robot
   Code: Robot
   Category: walkingunits
+  UnitArmorType: 0
+  UnitArmorWeight: 0
+  UnitArmorPoints: 0
   Description: Super quick movement and meduim damage. Good against units.
   Icon: {fileID: 21300000, guid: 8ed3b99b789565145b1123cc0bec905f, type: 3}
   FreeUnit: 0
@@ -1221,16 +1250,19 @@ MonoBehaviour:
   StopMvtOnTakeDamage: 0
   EnableTakeDamageAnim: 0
   TakeDamageDuration: 0.2
-  DamageOverTime: 0
-  DoTDamage: 3
-  InfiniteDoT: 0
-  DoTDuration: 20
-  DoTCycle: 4
+  DoT:
+    Enabled: 0
+    Damage: 0
+    Infinite: 0
+    Duration: 20
+    Cycle: 4
+    Source: {fileID: 0}
   DamageEffect: {fileID: 0}
   UnitPlane: {fileID: 1499023793964948}
   FlashTime: 0
   FactionID: 0
   CreatedBy: {fileID: 0}
+  SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 0}
   MvtTargetObj: {fileID: 0}
   DestinationReached: 0
@@ -1313,6 +1345,8 @@ MonoBehaviour:
   DirectAttack: 0
   MoveOnAttack: 0
   AttackAllTypes: 1
+  AttackUnits: 1
+  AttackBuildings: 1
   AttackCategories: 
   AttackCategoriesList: []
   AttackReload: 2
@@ -1325,21 +1359,25 @@ MonoBehaviour:
   AttackWhenAttacked: 0
   AttackInRange: 1
   AttackRange: 10
+  SearchEnemyRange: 50
   AttackRangeCenter: {fileID: 0}
   AttackRangeFromCenter: 0
   SearchReload: 1
   RequireAttackTarget: 1
   AttackPosition: {x: 0, y: 0, z: 0}
   AttackTarget: {fileID: 0}
-  Attacking: 0
-  TargetAssigned: 0
   FollowRange: 15
   AttackEffect: {fileID: 0}
   AttackEffectTime: 0
   ChangeMvtDistance: 2
   LastTargetPos: {x: 0, y: 0, z: 0}
+  UnitDamage:
+    DamageType: 0
+    UnitDamage: 0
+    BonusToLight: 0
+    BonusToMedium: 0
+    BonusToHeavy: 0
   CustomDamage: []
-  UnitDamage: 6
   BuildingDamage: 5
   AreaDamage: 0
   AttackRanges: []
@@ -1349,9 +1387,11 @@ MonoBehaviour:
   PlayAnimInDelay: 0
   DoT:
     Enabled: 0
+    Damage: 0
     Infinite: 0
     Duration: 20
     Cycle: 4
+    Source: {fileID: 0}
   AttackType: 0
   AttackSources:
   - AttackDelay: 0
@@ -1375,7 +1415,9 @@ MonoBehaviour:
   WeaponIdleRotation: {x: 0, y: 0, z: 0, w: 0}
   AttackAnimTime: 0.2
   AttackAnimTimer: 0
-  UnitMvt: {fileID: 0}
+  Attacker: 0
+  UnitMgr: {fileID: 0}
+  BuildingMgr: {fileID: 0}
   ArmyUnitID: -1
   AttackOrderSound: {fileID: 8300000, guid: 60ba6e957fcf8b646a9ec8820c5242c8, type: 3}
   AttackSound: {fileID: 8300000, guid: 056abf44145d44e42ace3d5f94a704c3, type: 3}
@@ -1400,9 +1442,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1415,6 +1459,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1445,9 +1490,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1460,6 +1507,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1492,9 +1540,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1507,6 +1557,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1539,9 +1590,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1554,6 +1607,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1586,9 +1640,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1601,6 +1657,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1633,9 +1690,11 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7dc082c5df2ed3d4db12282d418d6a41, type: 2}
   m_StaticBatchInfo:
@@ -1648,6 +1707,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5

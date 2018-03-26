@@ -1124,6 +1124,7 @@ MonoBehaviour:
   AttackWhenAttacked: 0
   AttackInRange: 1
   AttackRange: 10
+  SearchEnemyRange: 50
   AttackRangeCenter: {fileID: 0}
   AttackRangeFromCenter: 0
   SearchReload: 1
@@ -1135,8 +1136,13 @@ MonoBehaviour:
   AttackEffectTime: 0
   ChangeMvtDistance: 2
   LastTargetPos: {x: 0, y: 0, z: 0}
+  UnitDamage:
+    DamageType: 0
+    UnitDamage: 0
+    BonusToLight: 0
+    BonusToMedium: 0
+    BonusToHeavy: 0
   CustomDamage: []
-  UnitDamage: 10
   BuildingDamage: 10
   AreaDamage: 0
   AttackRanges: []
@@ -1151,7 +1157,7 @@ MonoBehaviour:
     Duration: 10
     Cycle: 2
     Source: {fileID: 0}
-  AttackType: 0
+  AttackType: 1
   AttackSources:
   - AttackDelay: 0
     AttackObj: {fileID: 114724787965240506, guid: 927e894a28b134d40ab631be399d3ebb,
@@ -1192,7 +1198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Tower
-  Code: Tower
+  Code: TORRO
   Category: 
   Description: This building attacks enemy units in range.
   Icon: {fileID: 21300000, guid: 092c1582eea94614fa7825534db4055f, type: 3}

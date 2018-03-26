@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.AI;
+using RTSArena;
 
 /* Unit script created by Oussama Bouanani, SoumiDelRio.
  * This script is part of the Unity RTS Engine */
@@ -13,11 +14,33 @@ public enum UnitAnimState { Idle, Building, Collecting, Moving, Attacking, Heali
 
 namespace RTSEngine
 {
+
+
 	public class Unit : NetworkBehaviour {
-		//Unit's info:
+        public enum ArmorType
+        {
+            Biological,
+            Mechanical,
+            Magical,
+            Metal,
+            Mutated
+        }
+        public enum ArmorWeight
+        {
+            Unarmored,
+            Light,
+            Medium,
+            Heavy
+        }
+
+        //Unit's info:
+        public bool isBuilding = false; // Means its a stationary building placed beforehand on the map
 		public string Name; //the name of the unit that will be displayd when it is selected.
 		public string Code; //unique code for each unit that is used to identify it in the system.
 		public string Category; //the category that this unit belongs to.
+        public ArmorType UnitArmorType;
+        public ArmorWeight UnitArmorWeight;
+        public int UnitArmorPoints;
 		public string Description; //the description of the unit that will be displayed when it is selected.
 		public Sprite Icon; //the icon that will be displayed when the unit is selected.
 
@@ -29,7 +52,7 @@ namespace RTSEngine
 
 		//health:
 		public float MaxHealth = 100.0f; //maximum health points of the unit
-		[HideInInspector]
+		//[HideInInspector]
 		public float Health; //current health of the unit
 		[HideInInspector]
 		public float HealthBarYPos; //the height of the health bar that shows when the mouse is over the building
@@ -108,6 +131,10 @@ namespace RTSEngine
 		//NPC Unit Spawner:
 		public int NPCUnitSpawnerID = -1;
 
+        //ZoneDoT
+        private float zoneDamageTimer;
+        public bool IsInDamageZone;
+
 		//components:
 		[HideInInspector]
 		public Builder BuilderMgr;
@@ -136,6 +163,8 @@ namespace RTSEngine
 		int InputMvtID = -1; //registers the last mvt input action ID made by this unit.
 		[HideInInspector]
 		public GameManager GameMgr;
+        [HideInInspector]
+        public NetworkArenaManager arenaMgr;
 
 		//Double Click:
 		bool FirstClick = false;
@@ -190,7 +219,7 @@ namespace RTSEngine
 
 			//if there's no unit selection texture, we'll let you know
 			if (UnitPlane == null) {
-				Debug.LogError ("You must attach a plane object at the bottom of the building and set it to 'UnitPlane' in the inspector.");
+				//Debug.LogError ("You must attach a plane object at the bottom of the building and set it to 'UnitPlane' in the inspector.");
 			} else {
 				UnitPlane.SetActive (false); //hide the selection texture object when the unit just spawned.
 			}
@@ -213,9 +242,8 @@ namespace RTSEngine
 			if (FactionID == GameManager.PlayerFactionID) { //if this is the local player
 				NPCUnitSpawnerID = -1; //then it does not have a NPC Unit Spawner component:
 			}
-
-			HasWarningImage = false;
-		}
+            HasWarningImage = false;
+        }
 
 		void Start ()
 		{
@@ -237,7 +265,7 @@ namespace RTSEngine
 				//set the player selection object for this building/resource:
 				PlayerSelection.MainObj = this.gameObject;
 			} else {
-				Debug.LogError("Player selection collider is missing!");
+				//Debug.LogError("Player selection collider is missing!");
 			}
 
 			if (FreeUnit == false) {
@@ -259,7 +287,8 @@ namespace RTSEngine
 					ID = 0;
 				}
 				MFactionMgr = GameMgr.Factions [ID].MFactionMgr; //Set the multiplayer faction manager
-			}
+
+            }
 
 			if (GameManager.PlayerFactionID == FactionID && CreatedBy != null && isServer == false) { //TBC ("isServer == false")
 				//if the new unit does not have a task when spawned, send them to the goto position.
@@ -269,8 +298,23 @@ namespace RTSEngine
 			//call the custom event below:
 			if (GameMgr.Events)
 				GameMgr.Events.OnUnitCreated (this);
-		}
 
+            zoneDamageTimer = GameMgr.ZoneDmgTimer;
+            if (gameObject.GetComponent<NetworkIdentity>().clientAuthorityOwner == null && isBuilding)
+            {
+                Invoke("AssignAuthorityForTower", 1f);
+            }
+        }
+
+        private void AssignAuthorityForTower()
+        {
+            GameManager.
+    Instance.
+    Factions[FactionID].
+    MFactionMgr.
+    TryToAssignAuthority(netId);
+
+        }
 		public void SetUnitColors ()
 		{
 			//Set the faction color objects:
@@ -317,12 +361,31 @@ namespace RTSEngine
             //if this is the local player
             if (GameManager.MultiplayerGame == false || (GameManager.MultiplayerGame == true && GameManager.PlayerFactionID == FactionID))
             {
+
                 if (Dead == false)
                 {
-                    if(IsIdle() && SpawnedBy.MovePosition != null)
+                    if (!isBuilding)
+                    if(IsIdle() && SpawnedBy.MovePosition != null )
                     {
                         CheckUnitPath(SpawnedBy.MovePosition.position, null, GameMgr.MvtStoppingDistance, -1, true);
                     }
+
+                    if(GameMgr.IsOnDamageZone(this.transform, FactionID))
+                    {
+                        if(!IsInDamageZone)
+                        {
+                            GameMgr.Factions[FactionID].MFactionMgr.CmdAddUnitInZone(FactionID);
+                            IsInDamageZone = true;
+                        }
+                        if (zoneDamageTimer <= 0)
+                        {
+                            AddHealth(-GameMgr.ZoneDamage, null);
+                            zoneDamageTimer = GameMgr.ZoneDmgTimer;
+                        }
+                        else
+                            zoneDamageTimer -= Time.deltaTime;
+                    }
+                    
                     //Damage over time:
                     //if the DoT effect is enabled
                     if (DoT.Enabled == true)
@@ -1017,8 +1080,6 @@ namespace RTSEngine
 
 		public void AddHealth (float Value, GameObject Source)
 		{
-			//AddHealthLocal (Value, Source);
-
 			if (GameManager.MultiplayerGame == false) {
 				AddHealthLocal (Value, Source);
 			} else {
@@ -1052,27 +1113,27 @@ namespace RTSEngine
 				if (Dead == false) { 
 					
 					//award the destroy award to the source:
-					if(DestroyAward.Length > 0)
-					{
-						if (Source != null) {
-							//get the source faction ID:
-							int SourceFactionID = -1;
-
-							if (Source.gameObject.GetComponent<Unit> ()) {
-								SourceFactionID = Source.gameObject.GetComponent<Unit> ().FactionID;
-							} else if (Source.gameObject.GetComponent<Building> ()) {
-								SourceFactionID = Source.gameObject.GetComponent<Building> ().FactionID;
-							}
-
-							//if the source is not the same faction ID:
-							if (SourceFactionID != FactionID) {
-								for (int i = 0; i < DestroyAward.Length; i++) {
-									//award destroy resources to source:
-									GameMgr.ResourceMgr.AddResource (SourceFactionID, DestroyAward [i].Name, DestroyAward [i].Amount);
-								}
-							}
-						}
-					}
+					//if(DestroyAward.Length > 0)
+					//{
+					//	if (Source != null) {
+					//		//get the source faction ID:
+					//		int SourceFactionID = -1;
+                    //
+					//		if (Source.gameObject.GetComponent<Unit> ()) {
+					//			SourceFactionID = Source.gameObject.GetComponent<Unit> ().FactionID;
+					//		} else if (Source.gameObject.GetComponent<Building> ()) {
+					//			SourceFactionID = Source.gameObject.GetComponent<Building> ().FactionID;
+					//		}
+                    //
+					//		//if the source is not the same faction ID:
+					//		if (SourceFactionID != FactionID) {
+					//			for (int i = 0; i < DestroyAward.Length; i++) {
+					//				//award destroy resources to source:
+					//				GameMgr.ResourceMgr.AddResource (SourceFactionID, DestroyAward [i].Name, DestroyAward [i].Amount);
+					//			}
+					//		}
+					//	}
+					//}
 
 					//destroy the building
 					DestroyUnit ();
@@ -1302,12 +1363,12 @@ namespace RTSEngine
 							}
 							if (FactionMgr.ArmyMgr.Army.Contains (this)) {
 								FactionMgr.ArmyMgr.Army.Remove (this);
-								FactionMgr.ArmyMgr.AttackingArmyPower -= this.gameObject.GetComponent<Attack> ().UnitDamage;
+								FactionMgr.ArmyMgr.AttackingArmyPower -= this.gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage;
 							}
 
 							//If the unit belongs to an attacking army of a NPC player
 							if (FactionMgr.ArmyMgr.Army.Contains (this)) {
-								FactionMgr.ArmyMgr.AttackingArmyPower -= this.gameObject.GetComponent<Attack> ().UnitDamage;
+								FactionMgr.ArmyMgr.AttackingArmyPower -= this.gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage;
 
 							}
 						}

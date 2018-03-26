@@ -137,7 +137,7 @@ namespace RTSEngine
 			//Add the army units (that have the attack component) in one list.
 			if (Unit.gameObject.GetComponent<Attack> ()) {
 				Army.Add (Unit.gameObject.GetComponent<Attack> ());
-				ArmyPower += Unit.gameObject.GetComponent<Attack> ().UnitDamage;
+				ArmyPower += Unit.gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage;
 			}
 			//Add the healers (that have the healer component) in one list.
 			if (Unit.gameObject.GetComponent<Healer> ()) {
@@ -179,7 +179,7 @@ namespace RTSEngine
 			//Add the army units (that have the attack component) in one list.
 			if (Unit.gameObject.GetComponent<Attack> ()) {
 				Army.Remove (Unit.gameObject.GetComponent<Attack> ());
-				ArmyPower -= Unit.gameObject.GetComponent<Attack> ().UnitDamage;
+				ArmyPower -= Unit.gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage;
 			}
 			//Add the healers (that have the healer component) in one list.
 			if (Unit.gameObject.GetComponent<Healer> ()) {

@@ -467,6 +467,7 @@ namespace RTSEngine
 		//reset the MP menu by hiding all the menus but the main one:
 		public void ResetMPMenu ()
 		{
+            if(MatchMakingMenu!=null)
 			if (MatchMakingMenu.activeInHierarchy == true) {
 				DisableMatchMaking ();
 			}

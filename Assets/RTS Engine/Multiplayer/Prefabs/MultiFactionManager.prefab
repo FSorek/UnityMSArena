@@ -84,37 +84,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8164412be93e142a3312ff76c56d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team1ContestTimer: 30
+  Team2ContestTimer: 30
   FactionID: 0
   CapitalBuilding: {fileID: 188834, guid: 9081df85ed6745c40854488c7dd2b688, type: 2}
   Buildings:
-  - {fileID: 188834, guid: 9081df85ed6745c40854488c7dd2b688, type: 2}
-  - {fileID: 145894, guid: cd99eea5e41729f4bad27fce1fcf8711, type: 2}
-  - {fileID: 179828, guid: c1d5148c6d0ed4047882468553ecea7f, type: 2}
-  - {fileID: 122680, guid: a1da93c984ce92c449483dda8803420c, type: 2}
-  - {fileID: 1228798490099632, guid: 8a7305b6757564f4594028de63c49252, type: 2}
-  - {fileID: 1438020799380894, guid: 84d0ec1a66c736c45bb942e645ffe4fb, type: 2}
-  - {fileID: 1651655672968022, guid: b57c70054e9d69f41808e2cf27440fb1, type: 2}
-  - {fileID: 1166819989235726, guid: fa70e56aff74d4e4091da7f79004659a, type: 2}
+  - {fileID: 1645764094720986, guid: 83b447f1aa3aa3c409089c6a4b5cfd78, type: 2}
   - {fileID: 1645764094720986, guid: 58435068a224c424c9bfa0889c8d9e83, type: 2}
+  - {fileID: 1645764094720986, guid: 0f3e7b4fec96b154e83c0ec197feefc4, type: 2}
+  - {fileID: 1645764094720986, guid: 0f3e7b4fec96b154e83c0ec197feefc4, type: 2}
   Units:
-  - {fileID: 126258, guid: 03d866f91a6f12f4299c874e2a19a3a0, type: 2}
-  - {fileID: 1351375238302358, guid: 2b44509edd9b0ae41b3db0cf6ad1ac6e, type: 2}
-  - {fileID: 1587449670352496, guid: 7c798cf437fd7724481e7cb079ec65c5, type: 2}
-  - {fileID: 117320, guid: fd6f74aadceed0445a58afeeabd85298, type: 2}
-  - {fileID: 142526, guid: 956766f6492bd5d4e97ad9f07d0d26cc, type: 2}
-  - {fileID: 1852235379901452, guid: 00395b664667309458f9f1ec919f4078, type: 2}
-  - {fileID: 1158943221867548, guid: 6396800bd790e994dafcc3324741994a, type: 2}
-  - {fileID: 1801551093659716, guid: 6578a17757152d04094c3dfaf773c3b3, type: 2}
+  - {fileID: 1661371769138574, guid: 245fa9d21b65ae24396c24f94be23751, type: 2}
+  - {fileID: 1661371769138574, guid: 90c86ef3714aaaf42a09276b41706d70, type: 2}
+  - {fileID: 1661371769138574, guid: e86667574da529a46bc7b91533d78a9a, type: 2}
+  - {fileID: 1827044561919982, guid: ad7f0ba46840fd8449c73df98ec029c3, type: 2}
   InputActions: []
   InputMvtUnits: []
   InputActionTimer: 0
   CanSendInput: 1
-  LockstepCycle: 0.1
-  LockstepCycleRange: {x: 0.1, y: 0.3}
-  DestroyObjDelay: 1
+  LockstepCycle: 0.05
+  LockstepCycleRange: {x: 0.01, y: 0.1}
+  DestroyObjDelay: 0.1
   ReceivedActions: 0
   CanPerformActions: 0
-  SnapDistance: 2
+  SnapDistanceTime: 2
+  SnapDistance: 1
   AllClientsReady: 0
   ClientsReady: 0
   CommandsSent: 0

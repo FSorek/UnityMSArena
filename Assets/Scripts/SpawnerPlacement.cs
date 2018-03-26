@@ -43,7 +43,7 @@ namespace RTSArena
                 Ray RayCheck = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 RaycastHit[] Hits;
-                Hits = Physics.RaycastAll(RayCheck, 100.0f);
+                Hits = Physics.RaycastAll(RayCheck, 1000.0f);
 
                 if (Hits.Length > 0)
                 {

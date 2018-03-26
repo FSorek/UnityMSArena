@@ -132,7 +132,7 @@ namespace RTSEngine
 				Unit.MaxHealth += FactionUnitUpgrades[Unit.FactionID].UpgradeList[ID].MaxHealth;
 				Unit.Health = Unit.MaxHealth;
 				if (Unit.gameObject.GetComponent<Attack> ()) {
-					Unit.gameObject.GetComponent<Attack> ().UnitDamage += FactionUnitUpgrades[Unit.FactionID].UpgradeList [ID].UnitDamage;
+					Unit.gameObject.GetComponent<Attack> ().UnitDamage.UnitDamage += FactionUnitUpgrades[Unit.FactionID].UpgradeList [ID].UnitDamage;
 					Unit.gameObject.GetComponent<Attack> ().BuildingDamage += FactionUnitUpgrades[Unit.FactionID].UpgradeList [ID].BuildingDamage;
 					//NEED A WAY TO MAKE DAMAGE HIGHER FOR CUSTOM DAMAGE AS WELL
 					Unit.gameObject.GetComponent<Attack> ().AttackReload += FactionUnitUpgrades[Unit.FactionID].UpgradeList [ID].AttackReload;

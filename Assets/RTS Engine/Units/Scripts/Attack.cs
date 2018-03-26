@@ -69,7 +69,24 @@ namespace RTSEngine
         //when the target changes position, then the attacker must change position
         public float ChangeMvtDistance = 2.0f;
         public Vector3 LastTargetPos;
-
+        public enum DamageType
+        {
+            Piercing,
+            Slash,
+            Impact,
+            Magic,
+            Chaos
+        }
+        [System.Serializable]
+        public class Damage
+        {
+            public DamageType DamageType;
+            public float UnitDamage;
+            public float BonusToLight;
+            public float BonusToMedium;
+            public float BonusToHeavy;
+        }
+        public Damage UnitDamage;
         //Attack damage:
         [System.Serializable]
 		public class DamageVars
@@ -78,8 +95,8 @@ namespace RTSEngine
 			public float Damage; //the amount of damage specifically for the building/unit with the above code.
 		}
 		public DamageVars[] CustomDamage; //if the target unit/building code is in the list then it will be given the matching damage, if not then the default damage
-		public float UnitDamage = 10.0f; //damage points when this unit attacks another unit.
 		public float BuildingDamage = 10.0f; //damage points when this unit attacks a building.
+        
 
 		//Area attack:
 		public bool AreaDamage = false;
@@ -126,6 +143,7 @@ namespace RTSEngine
 			public float AttackObjSpeed = 10.0f; //how fast is the attack object moving
 			public bool DamageOnce = true; //should the attack object do damage once it hits a building/unit and then do no more damage.
 			public bool DestroyAttackObjOnDamage = true; //should the attack object get destroyed after it has caused damage.
+            public bool FollowTarget = true; //should the projectile follow the target or go in a straight line? 
 		}
 		public AttackSourceVars[] AttackSources;
 		[HideInInspector]
@@ -265,7 +283,12 @@ namespace RTSEngine
             return -1;
         }
 
-        void Start () {
+        int DistanceSort(Collider a, Collider b)
+        {
+            return (transform.position - a.transform.position).sqrMagnitude.CompareTo((transform.position - b.transform.position).sqrMagnitude);
+        }
+
+    void Start () {
             //get the ame manager script
             GameMgr = GameManager.Instance;
 
@@ -376,6 +399,7 @@ namespace RTSEngine
                                         Vector3 SearchFrom = transform.position;
 
                                         Collider[] ObjsInRange = Physics.OverlapSphere(SearchFrom, Size); // ADD LAYERMASK
+                                        System.Array.Sort(ObjsInRange, DistanceSort);
                                         int i = 0; //counter
                                         while (i < ObjsInRange.Length && Found == false)
                                         {
@@ -578,7 +602,7 @@ namespace RTSEngine
                                                 {
                                                     //DoT settings:
                                                     TargetUnit.DoT = DoT;
-                                                    TargetUnit.DoT.Damage = AttackManager.GetDamage(AttackTarget, CustomDamage, UnitDamage);
+                                                    TargetUnit.DoT.Damage = AttackManager.GetDamage(AttackTarget, UnitDamage);
                                                 }
                                             }
                                             else
@@ -587,7 +611,7 @@ namespace RTSEngine
                                                 //deal damage to unit/building:
                                                 if (AttackTarget.GetComponent<Unit>())
                                                 {
-                                                    AttackTarget.GetComponent<Unit>().AddHealth(-AttackManager.GetDamage(AttackTarget, CustomDamage, UnitDamage), this.gameObject);
+                                                    AttackTarget.GetComponent<Unit>().AddHealth(-AttackManager.GetDamage(AttackTarget, UnitDamage), this.gameObject);
                                                     //Spawning the damage effect object:
                                                     AttackManager.Instance.SpawnEffectObj(AttackTarget.GetComponent<Unit>().DamageEffect, AttackTarget, 0.0f, true);
                                                     //spawn attack effect object: units only currently
@@ -595,7 +619,7 @@ namespace RTSEngine
                                                 }
                                                 else if (AttackTarget.GetComponent<Building>())
                                                 {
-                                                    AttackTarget.GetComponent<Building>().AddHealth(-AttackManager.GetDamage(AttackTarget, CustomDamage, BuildingDamage), this.gameObject);
+                                                    AttackTarget.GetComponent<Building>().AddHealth(-AttackManager.GetDamage(AttackTarget, UnitDamage), this.gameObject);
                                                     //Spawning the damage effect object:
                                                     AttackManager.Instance.SpawnEffectObj(AttackTarget.GetComponent<Building>().DamageEffect, AttackTarget, 0.0f, true);
                                                 }
@@ -637,18 +661,23 @@ namespace RTSEngine
                                                     AttackObj.CustomDamage = CustomDamage;
 
                                                     Vector3 TargetPos = AttackTarget.transform.position;
+                                                    
 
                                                     if (AttackTarget.GetComponent<Unit>())
                                                     {
                                                         AttackObj.TargetFactionID = AttackTarget.GetComponent<Unit>().FactionID;
-                                                        TargetPos = AttackTarget.GetComponent<Unit>().PlayerSelection.transform.position;
+                                                        //TargetPos = AttackTarget.GetComponent<Unit>().PlayerSelection.transform.position;
                                                     }
                                                     else if (AttackTarget.GetComponent<Building>())
                                                     {
                                                         AttackObj.TargetFactionID = AttackTarget.GetComponent<Building>().FactionID;
-                                                        TargetPos = AttackTarget.GetComponent<Building>().PlayerSelection.transform.position;
+                                                        //TargetPos = AttackTarget.GetComponent<Building>().PlayerSelection.transform.position;
                                                     }
-
+                                                    if(AttackSources[AttackStep].FollowTarget)
+                                                    {
+                                                        AttackObj.FollowTarget = AttackSources[AttackStep].FollowTarget;
+                                                        AttackObj.Target = AttackTarget.transform;
+                                                    }
                                                     AttackObj.DamageOnce = AttackSources[AttackStep].DamageOnce;
                                                     AttackObj.DestroyOnDamage = AttackSources[AttackStep].DestroyAttackObjOnDamage;
 

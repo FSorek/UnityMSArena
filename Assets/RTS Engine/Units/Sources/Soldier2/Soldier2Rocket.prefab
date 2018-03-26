@@ -102,9 +102,11 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: e86c377702aa20748ac223d70f899dc1, type: 2}
   - {fileID: 2100000, guid: 151164125ee467a4a9ec37f72e050d9d, type: 2}
@@ -118,6 +120,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -163,7 +166,12 @@ MonoBehaviour:
   MvtVector: {x: 0, y: 0, z: 0}
   Speed: 10
   CustomDamage: []
-  DefaultUnitDamage: 10
+  DefaultUnitDamage:
+    DamageType: 0
+    UnitDamage: 0
+    BonusToLight: 0
+    BonusToMedium: 0
+    BonusToHeavy: 0
   DefaultBuildingDamage: 10
   DamageOnce: 1
   DoDamage: 1
@@ -176,9 +184,11 @@ MonoBehaviour:
   AttackCategoriesList: []
   DoT:
     Enabled: 0
+    Damage: 0
     Infinite: 0
     Duration: 20
     Cycle: 4
+    Source: {fileID: 0}
   SpawnEffect: {fileID: 0}
   DestroyTime: 0
   DestroyTimer: 0
